@@ -1,0 +1,8 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon 780M Graphics (RADV PHOENIX) (radv) | uma: 1 | fp16: dot2 | bf16: 0 | fp4: 0 | warp size: 64 | shared memory: 65536 | int dot: 0 | matrix cores: KHR_coopmat
+device=AMD Radeon 780M Graphics (RADV PHOENIX) backend=Vulkan0
+matmul f32 max_abs_error=0.00000000 PASS
+matmul f16 max_abs_error=0.00000000 PASS
+conv1d f32 max_abs_error=0.00000000 PASS
+conv1d f16 max_abs_error=0.00000000 PASS
+All direct Vulkan computations passed; no CPU fallback.

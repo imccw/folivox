@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+task_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+task_args=("$@")
+if [[ "${1:-}" == "ui" ]]; then
+  task_has_port=false
+  for task_arg in "$@"; do
+    if [[ "$task_arg" == "--port" || "$task_arg" == --port=* ]]; then
+      task_has_port=true
+    fi
+  done
+  if [[ "$task_has_port" == false ]]; then
+    task_args+=(--port 8766)
+  fi
+fi
+exec "$task_root/experiments/.venv/bin/python" -B "$task_root/experiments/scripts/folivox_vulkan.py" "${task_args[@]}"

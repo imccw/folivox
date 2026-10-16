@@ -1,0 +1,66 @@
+<!-- Process-local extension for the Vulkan launcher's book drop area. -->
+<style>
+#raw-text-panel { margin-top:16px; text-align:left; cursor:default; color:var(--ink); }
+#raw-text-panel label { display:block; margin-bottom:6px; }
+#raw-text { display:block; width:100%; min-height:140px; resize:vertical; padding:10px;
+  font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:6px; }
+#raw-text:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#raw-text-panel .row { margin-top:10px; }
+</style>
+<script>
+(() => {
+  const drop = document.getElementById("drop");
+  drop.tabIndex = 0;
+  drop.insertAdjacentHTML("beforeend", `
+    <div id="raw-text-panel">
+      <label for="raw-text">Or paste raw text</label>
+      <textarea id="raw-text" rows="6" placeholder="Paste or type the text you want to hear…" aria-describedby="raw-text-hint"></textarea>
+      <div class="row">
+        <button id="use-raw-text" type="button" class="primary" disabled>Use text</button>
+        <small id="raw-text-hint" class="mute">Review your text, then choose Use text to load it as a book.</small>
+      </div>
+    </div>`);
+  const panel = document.getElementById("raw-text-panel");
+  const text = document.getElementById("raw-text");
+  const use = document.getElementById("use-raw-text");
+  let importing = false;
+  const update = () => { use.disabled = importing || !text.value.trim(); };
+
+  // Editing or submitting text must not open the file picker.
+  drop.onclick = (event) => {
+    if (!panel.contains(event.target) && event.target.id !== "file") {
+      document.getElementById("file").click();
+    }
+  };
+  text.addEventListener("input", update);
+  drop.addEventListener("paste", (event) => {
+    if (panel.contains(event.target)) return; // Native textarea paste preserves cursor/selection.
+    const pasted = event.clipboardData?.getData("text/plain");
+    if (!pasted) return;
+    event.preventDefault();
+    text.setRangeText(pasted, text.selectionStart, text.selectionEnd, "end");
+    text.focus();
+    update();
+  });
+  drop.addEventListener("drop", (event) => {
+    if (event.dataTransfer.files.length) return; // Keep the original file-drop handler.
+    const pasted = event.dataTransfer.getData("text/plain");
+    if (!pasted) return;
+    text.setRangeText(pasted, text.selectionStart, text.selectionEnd, "end");
+    text.focus();
+    update();
+  });
+  use.addEventListener("click", async () => {
+    if (importing || !text.value.trim()) return;
+    importing = true;
+    update();
+    try {
+      // Reuse Folivox's authenticated upload, parsing, session and chapter selection.
+      await upload(new File([text.value], "Pasted text.txt", { type: "text/plain;charset=utf-8" }));
+    } finally {
+      importing = false;
+      update();
+    }
+  });
+})();
+</script>

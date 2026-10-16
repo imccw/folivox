@@ -39,3 +39,16 @@ build/
 
 # clean environment of scripts/check.sh (mirrors CI)
 .venv-ci/
+
+# Vulkan experiment: share only the selected source files.
+*.gguf
+/experiments/*
+!/experiments/scripts/
+!/experiments/ui/
+/experiments/scripts/*
+!/experiments/scripts/build-vulkan.sh
+!/experiments/scripts/folivox_vulkan.py
+!/experiments/scripts/voice_prompt.py
+!/experiments/scripts/vulkan_probe.cpp
+/experiments/ui/*
+!/experiments/ui/raw-text.html

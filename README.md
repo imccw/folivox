@@ -1,5 +1,9 @@
 <div align="center">
 
+> **Experimental Vulkan branch:** Radeon 780M acceleration on Ryzen 7 8840HS
+> using cosyvoice.cpp / GGML. See [setup and limitations](docs/vulkan/README.md)
+> and [measured results](docs/vulkan/RESULTS.md). Other GPUs remain untested.
+
 # Folivox
 
 **The audiobook workhorse. A powerful tool in a simple interface, free.**
